@@ -29,3 +29,8 @@ class User(db.Model):
 
         user = self
         return f"<User {user.id}: {user.first_name} {user.last_name}>"
+
+    def edit_user(self, first_name, last_name, image_url):
+        self.first_name=first_name
+        self.last_name=last_name
+        self.image_url=image_url
