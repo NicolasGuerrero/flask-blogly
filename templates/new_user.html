@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} Blogly Create a User {% endblock %}
+
+{% block content %}
+
+<h2>Create a User</h2>
+<form action="/users/new", method="POST">
+    <input type="text" name="first_name">
+    <input type="text" name="last_name">
+    <input type="text" name="image_url">
+
+    <button>Add</button>
+</form>
+
+{% endblock %}
