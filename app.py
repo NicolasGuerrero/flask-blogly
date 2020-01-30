@@ -1,7 +1,7 @@
 """Blogly application."""
 
 from flask import Flask, redirect, render_template, request
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
@@ -85,3 +85,57 @@ def delete_user(user_id):
 
     return redirect("/users")
 
+@app.route("/users/<int:user_id>/posts/new")
+def show_new_post_form(user_id):
+    user = User.query.get_or_404(user_id)
+    return render_template('new_post.html', user=user)
+
+
+@app.route("/users/<int:user_id>/posts/new", methods=["POST"])
+def submit_new_post(user_id):
+    title = request.form['title']
+    content = request.form['content']
+
+    post = Post(title=title,
+                content=content,
+                user_id=user_id)
+    db.session.add(post)
+    db.session.commit()
+
+    return redirect(f'/user/{user_id}')
+
+
+@app.route("/posts/<int:post_id>")
+def show_post(post_id):
+    post = Post.query.get_or_404(post_id)
+
+    return render_template('post.html',post=post)
+
+@app.route("/posts/<int:post_id>/edit")
+def edit_post(post_id):
+    post = Post.query.get_or_404(post_id)
+
+    return render_template('edit_post.html', post=post)
+
+@app.route("/posts/<int:post_id>/edit", methods=["POST"])
+def submit_post_edit(post_id):
+    title = request.form['title']
+    content = request.form['content']
+    post = Post.query.get_or_404(post_id)
+    post.title = title
+    post.content = content
+    #How to handle time-stamp at edit??
+    db.session.commit()
+
+    return redirect(f'/posts/{post_id}')
+
+
+@app.route("/posts/<int:post_id>/delete", methods=["POST"])
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    user_id = post.user_id
+    db.session.delete(post)
+    db.session.commit()
+
+    return redirect(f'/user/{user_id}')
+    

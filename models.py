@@ -34,3 +34,21 @@ class User(db.Model):
         self.first_name=first_name
         self.last_name=last_name
         self.image_url=image_url
+
+class Post(db.Model):
+    """Post. """
+    __tablename__ = "posts"
+
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True)
+    title = db.Column(db.String(50),
+                      nullable=False)                  
+    content = db.Column(db.Text,
+                      nullable=False)
+    created_at = db.Column(db.DateTime,
+                      nullable=False,
+                      default=datetime.utcnow)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey('users.id'))
+         
