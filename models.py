@@ -20,12 +20,17 @@ class User(db.Model):
                            nullable=False)
     last_name = db.Column(db.String(25),
                           nullable=False)
-    image_url = db.Column(db.String(512),
+    image_url = db.Column(db.Text,
                           nullable=False,
-                          default='https://static1.squarespace.com/static/54b7b93ce4b0a3e130d5d232/54e20ebce4b014cdbc3fd71b/5a992947e2c48320418ae5e0/1519987239570/icon.png')
+                          default='https://bcdcog.com/wp-content/uploads/2016/05/profile-default-02.png')
 
     def __repr__(self):
         """ Show info about user."""
 
         user = self
         return f"<User {user.id}: {user.first_name} {user.last_name}>"
+
+    def edit_user(self, first_name, last_name, image_url):
+        self.first_name=first_name
+        self.last_name=last_name
+        self.image_url=image_url

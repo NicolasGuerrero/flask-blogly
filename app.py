@@ -24,7 +24,7 @@ def start():
 @app.route("/users")
 def list_users():
     users = User.query.all()
-    return render_template('/users.html', users=users)
+    return render_template('users.html', users=users)
 
 
 @app.route("/users/new")
@@ -32,11 +32,11 @@ def show_new_form():
     return render_template('new_user.html')
 
 
-@app.route("users/new", methods=["POST"])
+@app.route("/users/new", methods=["POST"])
 def submit_new_user():
     first_name = request.form['first_name']
     last_name = request.form['last_name']
-    image_url = request.form['img_url']
+    image_url = request.form['image_url'] or None
 
     user = User(first_name=first_name,
                 last_name=last_name,
@@ -47,40 +47,41 @@ def submit_new_user():
     return redirect("/users")
 
 
-@app.route("user/<int:user_id>")
+@app.route("/user/<int:user_id>")
 def show_profile(user_id):
     # button to edit or delete
     user = User.query.get_or_404(user_id)
     return render_template('user_detail.html', user=user)
 
 
-@app.route("user/<int:user_id>/edit")
+@app.route("/user/<int:user_id>/edit")
 def show_edit_form(user_id):
     user = User.query.get_or_404(user_id)
     return render_template('edit_user.html', user=user)
 
 
-@app.route("user/<int:user_id>/edit", methods=["POST"])
+@app.route("/user/<int:user_id>/edit", methods=["POST"])
 def submit_edit(user_id):
     first_name = request.form['first_name']
     last_name = request.form['last_name']
-    image_url = request.form.get('img_url', None)
+    image_url = request.form['image_url'] or None
 
     user = User.query.get_or_404(user_id)
+    # user = User.query.get(user_id)
     user.edit_user(first_name=first_name,
                    last_name=last_name,
                    image_url=image_url)
 
     db.session.commit()
 
-    return redirect("users.html")
+    return redirect("/users")
 
 
-@app.route("user/<int:user_id>/delete", methods=["POST"])
+@app.route("/user/<int:user_id>/delete", methods=["POST"])
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
     db.session.delete(user)
     db.session.commit()
 
-    return redirect("users.html")
+    return redirect("/users")
 
