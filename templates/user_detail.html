@@ -8,8 +8,10 @@
     <div class="image"><img src="{{ user.image_url }}" alt="Profile pic"></div>
     <div class="info">
         <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-        <a class="btn btn-primary" href="#" role="button">Edit</a>
-        <a class="btn btn-danger" href="#" role="button">Edit</a>
+        <form action="/user/{{ user.id }}/delete" method="POST">
+            <a class="btn btn-primary" href="/user/{{ user.id }}/edit" role="button">Edit</a>
+            <button class="btn btn-danger">Delete</button>
+        </form>
     </div>
 
 
