@@ -1,10 +1,10 @@
 from unittest import TestCase
 from app import app
 from flask import session
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 
 
-class BloglyTest(TestCase):
+class UserTests(TestCase):
     def test_submit_new_user(self):
         with app.test_client() as client:
             resp = client.post("/users/new",
@@ -17,8 +17,6 @@ class BloglyTest(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn("John", html)
-            self.assertIn(
-                'https://bcdcog.com/wp-content/uploads/2016/05/profile-default-02.png', html)
 
             new_user = db.session.query(User).order_by(User.id.desc()).first()
 
@@ -28,10 +26,10 @@ class BloglyTest(TestCase):
 
     def test_valid_user_profile(self):
         with app.test_client() as client:
-            resp = client.get("/user/1")
+            resp = client.get("/user/19")
             html = resp.get_data(as_text=True)
 
-            user = User.query.get(1)
+            user = User.query.get(19)
             first_name = user.first_name
 
             self.assertEqual(resp.status_code, 200)
@@ -65,3 +63,47 @@ class BloglyTest(TestCase):
 
             db.session.delete(editted_user)
             db.session.commit()
+
+class PostTests(TestCase):
+    def setUp(self):
+        # db.session.query(Post).delete()
+        Post.query.delete()
+        # db.session.query(User).delete()
+        User.query.delete()
+        user = User(first_name="Gretchen",
+                        last_name="Weiner",
+                        image_url='https://bcdcog.com/wp-content/uploads/2016/05/profile-default-02.png')
+        db.session.add(user)
+        db.session.commit()
+        self.user = user
+
+        post = Post(title="Test Post",
+                    content="Test Content.",
+                    user_id = self.user.id)
+        db.session.add(post)
+        db.session.commit()
+        self.post = post
+         
+
+    def test_submit_new_post(self):
+        with app.test_client() as client:
+            resp = client.post(f'/users/{self.user.id}/posts/new',
+                               data=dict(
+                                    title="Test Post",
+                                    content="Content of post."),
+                               follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            # self.assertIn(self.user.first_name, html)
+            self.assertIn("Test Post", html)
+
+    def test_show_post(self):
+        with app.test_client() as client:
+            resp = client.get(f'/posts/{self.post.id}')
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn("Test Content.", html)
+            
+
