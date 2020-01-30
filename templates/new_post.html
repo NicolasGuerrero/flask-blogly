@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Create a New Blog Post {% endblock %}
+
+{% block content %}
+<h2>Add Post for {{ user.first_name }}  {{ user.last_name }}</h2>
+<form action="/users/{{ user.id }}/posts/new" method="POST">
+    <label>Title: <br><input type="text" name="title"></label><br>
+    <label>Content: <br>
+        <textarea name="content" rows="10" cols="30" placeholder="Write your blog post here."></textarea>
+    </label>
+    <br>
+    <a href="/user/{{ user.id }}" class="btn btn-info" role="button">Cancel</a>
+    <button class="btn btn-success">Add</button>
+</form>
+
+{% endblock %}
