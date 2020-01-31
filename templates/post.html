@@ -8,6 +8,16 @@
 <h1>{{ post.title }}</h1>
 <p>{{ post.content }}</p>
 <p><i>By {{ post.user.first_name }} {{ post.user.last_name }}</i></p>
+<div>
+    <strong>Tags:</strong>
+
+    <!-- For tag in tags if tag in post.tags  -->
+    {% for tag in tags %}
+        {% if tag in post.tags %}
+            <a href="/tags/{{ tag.id }}"><span class="badge badge-primary">{{ tag.name }}</span></a>
+        {% endif %}
+    {% endfor %}
+</div>
 
 <a href="/user/{{ post.user.id }}" class="btn btn-outline-primary" role="button">Back to Profile</a><br>
 <a href="/posts/{{ post.id }}/edit" class="btn btn-primary" role="button">Edit Post</a><br>

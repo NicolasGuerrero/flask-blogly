@@ -32,11 +32,12 @@ class User(db.Model):
         return f"<User {user.id}: {user.first_name} {user.last_name}>"
 
     def edit_user(self, first_name, last_name, image_url):
-        self.first_name=first_name
-        self.last_name=last_name
-        self.image_url=image_url
+        self.first_name = first_name
+        self.last_name = last_name
+        self.image_url = image_url
 
     posts = db.relationship('Post', backref="user")
+
 
 class Post(db.Model):
     """Post. """
@@ -48,12 +49,13 @@ class Post(db.Model):
     title = db.Column(db.String(50),
                       nullable=False)
     content = db.Column(db.Text,
-                      nullable=False)
+                        nullable=False)
     created_at = db.Column(db.DateTime,
-                      nullable=False,
-                      default=datetime.utcnow)
+                           nullable=False,
+                           default=datetime.utcnow)
     user_id = db.Column(db.Integer,
                         db.ForeignKey('users.id'))
+
 
 class Tag(db.Model):
     """Tag. """
@@ -63,21 +65,20 @@ class Tag(db.Model):
                    primary_key=True,
                    autoincrement=True)
     name = db.Column(db.String(20),
-                    nullable=False)
+                     nullable=False)
+
     posts = db.relationship('Post',
-                             secondary='post_tags',
-                             backref='tags')
+                            secondary='post_tags',
+                            backref='tags')
+
 
 class PostTag(db.Model):
     """PostTag. """
     __tablename__ = "post_tags"
 
     post_id = db.Column(db.Integer,
-                        primary_key=True,
-                        db.ForeignKey('posts.id'))
+                        db.ForeignKey('posts.id'),
+                        primary_key=True)
     tag_id = db.Column(db.Integer,
-                        primary_key=True,
-                        db.ForeignKey('tags.id'))
-
-
-
+                       db.ForeignKey('tags.id'),
+                       primary_key=True)
